@@ -4,9 +4,11 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, msg: "Webhook is live" });
   }
 
-  // ✅ Parse the request body
-  const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
-  const tool = body.tool_name || body.tool || body.name;
+  // ✅ Parse the body and allow tool name from query params too
+const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
+const urlTool = (req.query && req.query.tool_name) || undefined;
+const tool = body.tool_name || body.tool || body.name || urlTool;
+
 
   // ✅ If the AI agent is asking for available appointment slots
   if (tool === "calendar_search") {
